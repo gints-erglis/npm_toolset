@@ -12,3 +12,5 @@ Thumbs.db
 
 # Environment variables (if you add any)
 .env
+
+.idea/
