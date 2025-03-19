@@ -1,0 +1,27 @@
+{
+    "name": "a11y-ai-bot",
+    "version": "1.1.0",
+    "description": "Automated A11Y (accessibility) testing tool with AI recommendations, PDF reporting, and CLI URL support",
+    "main": "a11-bot.js",
+    "scripts": {
+        "start": "node a11-bot.js https://example.com",
+        "test-a11y": "node a11-bot.js"
+    },
+    "keywords": [
+        "a11y",
+        "accessibility",
+        "axe-core",
+        "jsdom",
+        "pdf",
+        "AI"
+    ],
+    "author": "gints-erglis",
+    "license": "MIT",
+    "dependencies": {
+        "@axe-core/puppeteer": "^4.10.1",
+        "axe-core": "^4.8.2",
+        "html-pdf": "^3.0.1",
+        "jsdom": "^24.0.0",
+        "puppeteer": "^24.4.0"
+    }
+}
