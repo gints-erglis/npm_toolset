@@ -46,16 +46,47 @@ const targetURL = args[0] || "https://example.com";
           aria.push(`⚠️ AI ieteikums: Nestandarta ARIA loma '<b>${role}</b>' elementam <${el.tagName.toLowerCase()}>.`);
         }
       });
-
+      // ---------------
+      // Contrast
+      // ---------------
       const contrast = [];
       document.querySelectorAll('*').forEach((el) => {
         const style = window.getComputedStyle(el);
-        const color = style.color;
+        const fg = style.color;
         const bg = style.backgroundColor;
-        if (color && bg && color === bg) {
-          contrast.push(`⚠️ AI ieteikums: Zems kontrasts starp tekstu <b>${color}</b> un fonu <b>${bg}</b> elementam <${el.tagName.toLowerCase()}>.`);
+
+        function parseRGB(color) {
+          const match = color.match(/rgba?\((\d+), (\d+), (\d+)/);
+          return match ? [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])] : null;
+        }
+
+        function luminance([r, g, b]) {
+          const a = [r, g, b].map((v) => {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+          });
+          return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+        }
+
+        function contrastRatio(rgb1, rgb2) {
+          const lum1 = luminance(rgb1);
+          const lum2 = luminance(rgb2);
+          const brightest = Math.max(lum1, lum2);
+          const darkest = Math.min(lum1, lum2);
+          return (brightest + 0.05) / (darkest + 0.05);
+        }
+
+        const fgRGB = parseRGB(fg);
+        const bgRGB = parseRGB(bg);
+
+        if (fgRGB && bgRGB) {
+          const ratio = contrastRatio(fgRGB, bgRGB);
+          if (ratio < 4.5) {
+            contrast.push(`⚠️ AI ieteikums: Zems kontrasts (${ratio.toFixed(2)}:1) starp tekstu <b>${fg}</b> un fonu <b>${bg}</b> elementam <${el.tagName.toLowerCase()}>.`);
+          }
         }
       });
+
 
       return { suggestions, aria, contrast };
     });
