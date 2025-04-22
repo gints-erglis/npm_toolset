@@ -21,7 +21,8 @@ const targetURL = args[0] || "https://example.com";
     let reportHTML = `<h1>A11Y BOT Atzinums – ${targetURL}</h1>`;
 
     axeResults.violations.forEach((violation, i) => {
-      reportHTML += `<h2>🔴 Problēma #${i + 1}: ${violation.help}</h2>`;
+      const count = violation.nodes.length;
+      reportHTML += `<h2>🔴 Problēma #${i + 1}: ${violation.help} <span style="font-weight:normal;">(${count} element${count === 1 ? 's' : 'i'})</span></h2>`;
       reportHTML += `<p><b>Ieteikums:</b> ${violation.description}</p>`;
       violation.nodes.forEach((node, j) => {
         reportHTML += `<p>➤ Elementa selektors: <code>${node.target.join(", ")}</code></p>`;
